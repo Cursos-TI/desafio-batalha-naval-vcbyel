@@ -11,7 +11,13 @@ int main() {
     tabuleiro[3][3] = 3;
     tabuleiro[4][3] = 3;
     tabuleiro[5][3] = 3;
-
+	tabuleiro[6][3] = 3;
+	tabuleiro[0][0] = 3;
+	tabuleiro[1][1] = 3;
+	tabuleiro[2][2] = 3;
+	tabuleiro[0][9] = 3;
+	tabuleiro[1][8] = 3;
+	tabuleiro[2][7] = 3;
     for (int i = 0; i < 10; i++) {
         tabuleiro[i][0];
     }
@@ -33,8 +39,9 @@ int main() {
         }
         printf("\n");
     }
-    
-    	
+
+
+		
 
     return 0;
 }
