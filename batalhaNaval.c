@@ -1,47 +1,104 @@
 #include <stdio.h>
+#include <stdlib.h> // para abs()
 
-int main() {
-    char linha[10] = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'};
-    int tabuleiro[10][10] = {0};
+#define tamtabuleiro 10   // Tamanho do tabuleiro
+#define dimensaohab 5     // Dimensão das habilidades
+#define agua 0            // Representação da água
+#define habilidade 5      // Representação de uma habilidade
 
-    // Inicializações
-    tabuleiro[1][2] = 3;
-    tabuleiro[1][3] = 3;
-    tabuleiro[1][4] = 3;
-    tabuleiro[3][3] = 3;
-    tabuleiro[4][3] = 3;
-    tabuleiro[5][3] = 3;
-	tabuleiro[6][3] = 3;
-	tabuleiro[0][0] = 3;
-	tabuleiro[1][1] = 3;
-	tabuleiro[2][2] = 3;
-	tabuleiro[0][9] = 3;
-	tabuleiro[1][8] = 3;
-	tabuleiro[2][7] = 3;
-    for (int i = 0; i < 10; i++) {
-        tabuleiro[i][0];
+// Inicializa o tabuleiro com água
+void tabuleiroinit(int tabuleiro[tamtabuleiro][tamtabuleiro]) {
+    for (int i = 0; i < tamtabuleiro; i++) {
+        for (int j = 0; j < tamtabuleiro; j++) {
+            tabuleiro[i][j] = agua;
+        }
     }
+}
 
-    // Imprimir cabeçalho das colunas - deu trabalho  - infelizmente tive que ir em buscar de ajuda do youtube pq nao ficou
-    // muito bem entendido esa questao de como faço pra imprimir essas letrar na linha!
-    
-    
-    for (int j = 0; j < 10; j++) {
-        printf(" %c", linha[j]);
-    }
-    printf("\n");
-
-    // Imprimir tabuleiro
-    for (int i = 0; i < 10; i++) {
-        printf("%2d", i + 1); // Número da linha
-        for (int j = 0; j < 10; j++) {
-            printf(" %d", tabuleiro[i][j]);
+// Imprime o tabuleiro
+void tabuimp(int tabuleiro[tamtabuleiro][tamtabuleiro]) {
+    for (int i = 0; i < tamtabuleiro; i++) {
+        for (int j = 0; j < tamtabuleiro; j++) {
+            if (tabuleiro[i][j] == agua)
+                printf("0 ");
+            else if (tabuleiro[i][j] == habilidade)
+                printf("5 ");
         }
         printf("\n");
     }
+}
 
+// Define a habilidade em forma de cone
+void cone(int matriz[dimensaohab][dimensaohab]) {
+    for (int i = 0; i < dimensaohab; i++) {
+        for (int j = 0; j < dimensaohab; j++) {
+            if (j >= dimensaohab / 2 - i && j <= dimensaohab / 2 + i)
+                matriz[i][j] = 1;
+            else
+                matriz[i][j] = 0;
+        }
+    }
+}
 
-		
+// Define a habilidade em forma de cruz
+void cruz(int matriz[dimensaohab][dimensaohab]) {
+    for (int i = 0; i < dimensaohab; i++) {
+        for (int j = 0; j < dimensaohab; j++) {
+            if (i == dimensaohab / 2 || j == dimensaohab / 2)
+                matriz[i][j] = 1;
+            else
+                matriz[i][j] = 0;
+        }
+    }
+}
+
+// Define a habilidade em forma de losango
+void losango(int matriz[dimensaohab][dimensaohab]) {
+    for (int i = 0; i < dimensaohab; i++) {
+        for (int j = 0; j < dimensaohab; j++) {
+            if (abs(i - 1) + abs(j - 1) <= 1)
+                matriz[i][j] = 1;
+            else
+                matriz[i][j] = 0;
+        }
+    }
+}
+
+// Aplica uma habilidade no tabuleiro
+void aplicarhabilidade(int tabuleiro[tamtabuleiro][tamtabuleiro],
+                       int habilidade1[dimensaohab][dimensaohab],
+                       int origemi, int origemj) {
+    for (int i = 0; i < dimensaohab; i++) {
+        for (int j = 0; j < dimensaohab; j++) {
+            int posi = origemi + i - dimensaohab / 2;
+            int posj = origemj + j - dimensaohab / 2;
+
+            if (posi >= 0 && posi < tamtabuleiro && posj >= 0 && posj < tamtabuleiro) {
+                if (habilidade1[i][j] == 1 && tabuleiro[posi][posj] == agua) {
+                    tabuleiro[posi][posj] = habilidade;
+                }
+            }
+        }
+    }
+}
+
+int main() {
+    int tabuleiro[tamtabuleiro][tamtabuleiro];
+    int cone1[dimensaohab][dimensaohab];
+    int cruz1[dimensaohab][dimensaohab];
+    int losango1[dimensaohab][dimensaohab];
+
+    tabuleiroinit(tabuleiro);
+    cone(cone1);
+    cruz(cruz1);
+    losango(losango1);
+
+    aplicarhabilidade(tabuleiro, cone1, 2, 2);
+    aplicarhabilidade(tabuleiro, cruz1, 5, 7);
+    aplicarhabilidade(tabuleiro, losango1, 8, 3);
+
+    printf("Tabuleiro final com habilidades:\n");
+    tabuimp(tabuleiro);
 
     return 0;
 }
